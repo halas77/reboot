@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 // Create product
 const createProduct = asyncHandler(async (req, res) => {
-  const { name, desc, tag, price, category } = req.body;
+  const { name, desc, tag, price, category, imageURI } = req.body;
   const userId = req.user._id;
 
   console.log(userId);
@@ -16,6 +16,7 @@ const createProduct = asyncHandler(async (req, res) => {
     price,
     category,
     userId,
+    imageURI,
   });
 
   if (product) {
@@ -26,6 +27,7 @@ const createProduct = asyncHandler(async (req, res) => {
       tag: product.tag,
       price: product.price,
       category: product.category,
+      imageURI: product.imageURI,
     });
   } else {
     res.status(400);
@@ -60,6 +62,7 @@ const getProduct = asyncHandler(async (req, res) => {
       price: product.price,
       tag: product.tag,
       category: product.category,
+      imageURI: product.imageURI,
     });
   } else {
     res.status(404);
@@ -77,7 +80,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.tag = req.body.tag || product.tag;
     product.price = req.body.price || product.price;
     product.category = req.body.category || product.category;
-    product.userId = product.userId;
+    product.imageURI = req.body.imageURI || product.imageURI
+    product.userId = product.userId
 
     const updatedProduct = await product.save();
 
@@ -88,6 +92,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       price: updatedProduct.price,
       tag: updatedProduct.tag,
       category: updateProduct.category,
+      imageURI: updateProduct.imageURI,
     });
   } else {
     res.status(404);
