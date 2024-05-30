@@ -7,6 +7,8 @@ import cookieParser from 'cookie-parser';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoute.js';
+import { fileURLToPath } from 'url';
+import multer from 'multer'
 
 
 const port = process.env.PORT || 5000;
@@ -24,6 +26,27 @@ app.use(cookieParser());
 // routes
 app.use('/api/users', userRoutes);
 app.use('/api/product', productRoutes);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename)
+app.use("/images",express.static(path.join(__dirname,"/images")))
+
+//image upload
+const storage=multer.diskStorage({
+  destination:(req,file,fn)=>{
+      fn(null,"images")
+  },
+  filename:(req,file,fn)=>{
+      fn(null,req.body.img)
+  }
+})
+
+// image route
+const upload=multer({storage:storage})
+app.post("/api/upload",upload.single("file"),(req,res)=>{
+  console.log(req.body)
+  res.status(200).json("Image has been uploaded successfully!")
+})
+
 
 
 

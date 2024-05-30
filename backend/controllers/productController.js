@@ -26,7 +26,6 @@ const createProduct = asyncHandler(async (req, res) => {
       tag: product.tag,
       price: product.price,
       category: product.category,
-      userId: product.userId,
     });
   } else {
     res.status(400);
@@ -78,8 +77,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.tag = req.body.tag || product.tag;
     product.price = req.body.price || product.price;
     product.category = req.body.category || product.category;
-    product.userId = product.userId
-
+    product.userId = product.userId;
 
     const updatedProduct = await product.save();
 
@@ -89,6 +87,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       desc: updatedProduct.desc,
       price: updatedProduct.price,
       tag: updatedProduct.tag,
+      category: updateProduct.category,
     });
   } else {
     res.status(404);
