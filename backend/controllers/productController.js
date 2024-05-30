@@ -4,13 +4,18 @@ import mongoose from "mongoose";
 
 // Create product
 const createProduct = asyncHandler(async (req, res) => {
-  const { name, desc, tag, price } = req.body;
+  const { name, desc, tag, price, category } = req.body;
+  const userId = req.user._id;
+
+  console.log(userId);
 
   const product = await Product.create({
     name,
     desc,
     tag,
     price,
+    category,
+    userId,
   });
 
   if (product) {
@@ -20,10 +25,12 @@ const createProduct = asyncHandler(async (req, res) => {
       desc: product.desc,
       tag: product.tag,
       price: product.price,
+      category: product.category,
+      userId: product.userId,
     });
   } else {
     res.status(400);
-    throw new Error("Invalid user data");
+    throw new Error("Invalid product data");
   }
 });
 
@@ -53,6 +60,7 @@ const getProduct = asyncHandler(async (req, res) => {
       desc: product.desc,
       price: product.price,
       tag: product.tag,
+      category: product.category,
     });
   } else {
     res.status(404);
@@ -64,11 +72,14 @@ const getProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
-  if (product) {
+  if (product.userId == req.user._id) {
     product.name = req.body.name || product.name;
     product.desc = req.body.desc || product.desc;
     product.tag = req.body.tag || product.tag;
     product.price = req.body.price || product.price;
+    product.category = req.body.category || product.category;
+    product.userId = product.userId
+
 
     const updatedProduct = await product.save();
 
